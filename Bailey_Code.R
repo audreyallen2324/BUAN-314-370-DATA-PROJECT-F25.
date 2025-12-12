@@ -14,9 +14,9 @@ mh <- mh %>%
          Stress_Level = Stress_Level.1.10.,
          Days_With_Exercise = Exercise_Frequency.week.,
          Happiness_Index = Happiness_Index.1.10.)
-#Query 7 --> Analysis of how the average happiness index fluctuates as screen time hours increases
+#Query 10 --> Analysis of how the average happiness index fluctuates as screen time hours increases
 
-QUERY7 <- sqldf("
+QUERY10 <- sqldf("
 SELECT
   ROUND(Daily_Screen_Time) AS screen_time_hour,
   AVG(Happiness_Index) AS avg_happiness,
@@ -27,12 +27,12 @@ WHERE Daily_Screen_Time IS NOT NULL
 GROUP BY ROUND(Daily_Screen_Time)
 ORDER BY screen_time_hour
 ")
-str(QUERY7)
-
-#Visulaization for Query 7
+str(QUERY10)
+QUERY10
+#Visulaization 11
 library(ggplot2)
 
-ggplot(QUERY5, aes(x = screen_time_hour, y = avg_happiness)) +
+ggplot(QUERY10, aes(x = screen_time_hour, y = avg_happiness)) +
   geom_segment(
     aes(xend = screen_time_hour, y = 0, yend = avg_happiness),
     color = "gray70",
@@ -47,8 +47,8 @@ ggplot(QUERY5, aes(x = screen_time_hour, y = avg_happiness)) +
   ) +
   theme_minimal(base_size = 14)
 
-#Query 8 --> Stress x Sleep x Screen Time 
-sqldf("SELECT
+#Query 11 --> Stress x Sleep x Screen Time 
+QUERY11 <- sqldf("SELECT
   CASE
     WHEN Daily_Screen_Time < 3 THEN 'Low Screen'
     WHEN Daily_Screen_Time < 6 THEN 'Medium Screen'
@@ -66,10 +66,12 @@ ORDER BY
     ELSE 3
   END;
 ")
-#Visualization for Query 8
+QUERY11
+
+#Visualization 12
 library(ggplot2)
 
-ggplot(QUERY8, 
+ggplot(QUERY11, 
        aes(x = Sleep_Quality, y = Screen_Group, fill = avg_stress)) +
   geom_tile(color = "white", linewidth = 0.5) +
   scale_fill_gradient(
@@ -88,8 +90,8 @@ ggplot(QUERY8,
     legend.position = "right"
   )
 
-#QUERY 9 --> Average Stress by Exercise Frequency
-QUERY9 <- sqldf("
+#Extra Query --> Average Stress by Exercise Frequency
+EXTRAQUERY <- sqldf("
 SELECT
   Days_With_Exercise AS exercise_days,
   ROUND(AVG(Stress_Level), 2) AS avg_stress,
@@ -99,10 +101,10 @@ WHERE Stress_Level BETWEEN 1 AND 10
 GROUP BY Days_With_Exercise
 ORDER BY Days_With_Exercise;
 ")
-QUERY9
+EXTRAQUERY
 
-#Visualization for Query 9
-ggplot(QUERY10, aes(x = exercise_days, y = avg_stress)) +
+#Extra Visualization
+ggplot(EXTRAQUERY, aes(x = exercise_days, y = avg_stress)) +
   geom_line(color = "steelblue", linewidth = 1) +
   geom_point(size = 3, color = "darkred") +
   labs(
